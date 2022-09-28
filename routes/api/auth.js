@@ -73,7 +73,17 @@ router.post('/register', async (req, res) => {
 
     await user.save();
 
-    return res.json(user);
+    const payload = {
+      user: {
+        id: user._id,
+      },
+    };
+
+    const token = jwt.sign(payload, process.env.SECRET_KEY, {
+      expiresIn: 36000000,
+    });
+
+    return res.json({ token });
   } catch (err) {
     console.error(err.message);
     res.status(500).json(formatError('Server Error'));
